@@ -25,15 +25,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Install dependencies
-      run:
-        cd my-app
-        npm ci
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Install dependencies
+      run:  |
+        cd my-app
+        npm ci
+    - name: Buil the app
+      run: |
+        cd my-app
+        npm run build
+    - name: Run Component tests 
+      run: |
+        cd my-app
+        npm run test
+    - name: Start the app
+      run: |
+        cd my-app
+        npm start &
+        npx wait-on --timeout 600000      
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
